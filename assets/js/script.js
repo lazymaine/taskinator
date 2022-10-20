@@ -10,7 +10,7 @@ var taskFormHandler = function(event) {
         // use event object to prevent the browser from carry out its ecpected behavior
         event.preventDefault();
         // select the value from 'task-name'
-        var taskNameInput = document.querySelector("input[name='task-name").value;
+        var taskNameInput = document.querySelector("input[name='task-name']").value;
         // select the value from 'task-type'
         var taskTypeInput = document.querySelector("select[name='task-type']").value;
 
@@ -107,7 +107,17 @@ formEl.addEventListener("submit", taskFormHandler);
 
 
 var taskButtonHandler = function(event) {
-    if (event.target.matches(".delete-btn")) {
+
+    //get target element from event
+    var targetEl = event.target;
+
+    // edit button was clicked
+    if (targetEl.matches(".edit-btn")) {
+        var taskId = targetEl.getAttribute("data-task-id");
+        editTask(taskId);
+    }
+    // delete button was clicked
+    else if (event.target.matches(".delete-btn")) {
         var taskId = event.target.getAttribute("data-task-id");
         deleteTask(taskId);
     }
@@ -116,6 +126,23 @@ var taskButtonHandler = function(event) {
   var deleteTask = function(taskId) {
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
     taskSelected.remove();
+  };
+
+  var editTask = function(taskId) {
+    console.log("editing task #" + taskId);
+
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    var taskName = taskSelected.querySelector("h3.task-name").textContent;
+    console.log(taskName);
+
+    var taskType = taskSelected.querySelector("span.task-type").textContent;
+    console.log(taskType);
+
+    document.querySelector("input[name='task-name']").value = taskName;
+    document.querySelector("select[name='task-type']").value = taskType;
+    document.querySelector("#save-task").textContent = "Save Task";
+    formEl.setAttribute("data-task-id", taskId);
   };
   
 pageContentEl.addEventListener("click", taskButtonHandler);
